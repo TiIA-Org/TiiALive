@@ -1,0 +1,15 @@
+logLevel: info
+
+rtmpAddress: :1935
+hlsAddress: :8888
+
+paths:
+  cam1:
+    source: publisher
+    record: no
+  cam2:
+    source: publisher
+    record: no
+  cam3:
+    source: publisher
+    record: no

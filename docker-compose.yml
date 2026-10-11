@@ -1,0 +1,27 @@
+services:
+  web:
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ./apps/web:/app
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_STREAM_CAM1_URL: ${NEXT_PUBLIC_STREAM_CAM1_URL:-http://localhost:8888/cam1/index.m3u8}
+      NEXT_PUBLIC_STREAM_CAM2_URL: ${NEXT_PUBLIC_STREAM_CAM2_URL:-http://localhost:8888/cam2/index.m3u8}
+      NEXT_PUBLIC_STREAM_CAM3_URL: ${NEXT_PUBLIC_STREAM_CAM3_URL:-http://localhost:8888/cam3/index.m3u8}
+    depends_on:
+      - mediamtx
+
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    container_name: tiia-mediamtx
+    ports:
+      - "1935:1935"
+      - "8888:8888"
+    volumes:
+      - ./streaming/mediamtx/mediamtx.yml:/mediamtx.yml:ro
+    command: ["/mediamtx.yml"]
+    restart: unless-stopped
