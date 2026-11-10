@@ -5,7 +5,7 @@ export function Hero() {
     <section className="hero relative isolate flex min-h-[720px] items-center overflow-hidden sm:min-h-[800px]">
       <div className="hero-image absolute inset-0">
         <Image
-          src="/assets/gta-vi-cinema.jpeg"
+          src="/assets/background.jpeg"
           alt="Miami street at sunset with palm trees, oceanfront buildings, and traffic"
           fill
           preload
