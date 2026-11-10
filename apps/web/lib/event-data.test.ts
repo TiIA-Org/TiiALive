@@ -3,13 +3,12 @@ import { describe, expect, it } from "vitest";
 import { getDefaultEventData } from "./event-data";
 
 describe("event data model", () => {
-  it("exposes seeded challenge, leaderboard, stats and vote data", () => {
+  it("starts without invented event measurements", () => {
     const data = getDefaultEventData();
 
-    expect(data.goals.length).toBeGreaterThan(0);
-    expect(data.rankings.length).toBeGreaterThan(0);
-    expect(data.stats.length).toBeGreaterThan(0);
-    expect(data.votes.length).toBeGreaterThan(0);
-    expect(data.goals[0].title).toContain("donativos");
+    expect(data.goals).toEqual([]);
+    expect(data.rankings).toEqual([]);
+    expect(data.stats).toEqual([]);
+    expect(data.votes).toEqual([]);
   });
 });

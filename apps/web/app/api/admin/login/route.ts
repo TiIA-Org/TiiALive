@@ -1,32 +1,38 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
-const ADMIN_COOKIE = "tiia_admin_session";
+import { ADMIN_OAUTH_STATE_COOKIE, createOAuthState, secureCookie } from "@/lib/admin-auth";
+import { allowAttempt } from "@/lib/rate-limit";
 
-export async function POST(request: Request) {
-  const body = await request.json().catch(() => ({ password: "" }));
-  const expectedPassword = process.env.ADMIN_PASSWORD;
-
-  if (!expectedPassword) {
-    return NextResponse.json(
-      { error: "Admin password is not configured" },
-      { status: 503 }
-    );
-}  
-  const providedPassword = String(body.password ?? "");
-
-  if (providedPassword !== expectedPassword) {
-    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const ip = request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() ?? "unknown";
+  const clientId = process.env.TWITCH_CLIENT_ID;
+  const redirectUri = process.env.TWITCH_REDIRECT_URI;
+  if (!clientId || !redirectUri || !process.env.TWITCH_CLIENT_SECRET || !process.env.ADMIN_TWITCH_USER_ID ||
+      !process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return NextResponse.redirect(new URL("/admin/login?error=configuration", url));
+  }
+  if (!(await allowAttempt(`admin-login:${ip}`))) {
+    return NextResponse.redirect(new URL("/admin/login?error=rate_limit", url));
   }
 
-  const cookieStore = await cookies();
-  cookieStore.set(ADMIN_COOKIE, "authenticated", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 8,
-    path: "/",
-  });
+  const state = createOAuthState();
+  const authorize = new URL("https://id.twitch.tv/oauth2/authorize");
+  authorize.search = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: "code",
+    scope: "openid",
+    state,
+  }).toString();
 
-  return NextResponse.json({ ok: true });
+  const response = NextResponse.redirect(authorize);
+  response.cookies.set(ADMIN_OAUTH_STATE_COOKIE, state, {
+    httpOnly: true,
+    secure: secureCookie(),
+    sameSite: "lax",
+    path: "/",
+    maxAge: 10 * 60,
+  });
+  return response;
 }

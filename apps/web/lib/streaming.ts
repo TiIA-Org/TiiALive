@@ -7,7 +7,7 @@ export const liveCameras = [
     title: "Camera 01",
     src: streamerConfig.streams.main,
     isMain: true,
-    enabled: true,
+    enabled: Boolean(streamerConfig.streams.main),
   },
   {
     id: "cam2",
@@ -15,7 +15,7 @@ export const liveCameras = [
     title: "Camera 02",
     src: streamerConfig.streams.camera2,
     isMain: false,
-    enabled: true,
+    enabled: Boolean(streamerConfig.streams.camera2),
   },
   {
     id: "cam3",
@@ -23,6 +23,6 @@ export const liveCameras = [
     title: "Camera 03",
     src: streamerConfig.streams.camera3,
     isMain: false,
-    enabled: true,
+    enabled: Boolean(streamerConfig.streams.camera3),
   },
 ];

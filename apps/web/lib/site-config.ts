@@ -1,3 +1,5 @@
+import { normalizePlaybackUrl, streamerConfig } from "@/lib/config";
+
 export type CameraDefinition = {
   id: string;
   title: string;
@@ -18,29 +20,29 @@ export type EventSiteConfig = {
 export function getDefaultSiteConfig(): EventSiteConfig {
   return {
     eventName: "DanteFDD GTA VI Live Experience",
-    description: "Seven-day live event experience with three independent camera feeds and community-driven milestones.",
-    isLive: true,
-    multiview: true,
+    description: "",
+    isLive: false,
+    multiview: false,
     selectedCamera: "cam1",
-    twitchChannel: "dantefdd",
+    twitchChannel: streamerConfig.twitchChannel,
     cameras: [
       {
         id: "cam1",
         title: "Camera 01",
-        src: process.env.NEXT_PUBLIC_STREAM_CAM1_URL ?? "http://localhost:8888/cam1/index.m3u8",
-        enabled: true,
+        src: normalizePlaybackUrl(process.env.NEXT_PUBLIC_STREAM_CAM1_URL),
+        enabled: Boolean(normalizePlaybackUrl(process.env.NEXT_PUBLIC_STREAM_CAM1_URL)),
       },
       {
         id: "cam2",
         title: "Camera 02",
-        src: process.env.NEXT_PUBLIC_STREAM_CAM2_URL ?? "http://localhost:8888/cam2/index.m3u8",
-        enabled: true,
+        src: normalizePlaybackUrl(process.env.NEXT_PUBLIC_STREAM_CAM2_URL),
+        enabled: Boolean(normalizePlaybackUrl(process.env.NEXT_PUBLIC_STREAM_CAM2_URL)),
       },
       {
         id: "cam3",
         title: "Camera 03",
-        src: process.env.NEXT_PUBLIC_STREAM_CAM3_URL ?? "http://localhost:8888/cam3/index.m3u8",
-        enabled: true,
+        src: normalizePlaybackUrl(process.env.NEXT_PUBLIC_STREAM_CAM3_URL),
+        enabled: Boolean(normalizePlaybackUrl(process.env.NEXT_PUBLIC_STREAM_CAM3_URL)),
       },
     ],
   };

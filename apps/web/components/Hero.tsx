@@ -31,11 +31,10 @@ export function Hero() {
         </h1>
         <div className="mt-8 flex flex-col items-start gap-5 sm:mt-10">
           <span className="live-now inline-flex items-center gap-3 rounded-full border border-white/25 bg-black/30 px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.3em] text-white backdrop-blur-sm sm:text-xs">
-            <span className="live-now-dot" aria-hidden="true" />
-            LIVE NOW
+            DANTEFDD BROADCAST
           </span>
           <a
-            href="#live"
+            href="#broadcast"
             className="hero-cta mt-1 inline-flex min-h-12 items-center justify-center gap-3 border border-white/70 px-7 text-[10px] font-bold uppercase tracking-[0.28em] text-white transition duration-300 hover:border-[#ffb3a0] hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffcfb0]"
           >
             Watch live <span aria-hidden="true">↓</span>

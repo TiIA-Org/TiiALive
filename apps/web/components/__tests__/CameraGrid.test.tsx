@@ -1,41 +1,32 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { CameraGrid } from "../CameraGrid";
+import { CameraGrid } from "@/components/CameraGrid";
 
 describe("CameraGrid", () => {
-  it("shows a single selected camera when multiview is off", () => {
-    render(
-      <CameraGrid
-        streams={[
-          { key: "cam1", title: "Camera 01", src: "http://localhost:8888/cam1/index.m3u8" },
-          { key: "cam2", title: "Camera 02", src: "http://localhost:8888/cam2/index.m3u8" },
-          { key: "cam3", title: "Camera 03", src: "http://localhost:8888/cam3/index.m3u8" },
-        ]}
-        selectedCamera="cam2"
-        multiview={false}
-        onSelectCamera={() => undefined}
-      />,
-    );
+  const streams = [
+    { id: "cam1", title: "Camera 01", src: "https://media.example.test/cam1/index.m3u8", enabled: true },
+    { id: "cam2", title: "Camera 02", src: "https://media.example.test/cam2/index.m3u8", enabled: true },
+    { id: "cam3", title: "Camera 03", src: "", enabled: false },
+  ];
 
-    expect(screen.getByText("Camera 02")).toBeInTheDocument();
-    expect(screen.getByText("CAM 02")).toBeInTheDocument();
+  it("selects one configured camera and keeps the feeds independent", () => {
+    const { container } = render(<CameraGrid streams={streams} selectedCamera="cam1" onSelectCamera={vi.fn()} />);
+    expect(screen.getByLabelText("Camera 01 live stream")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Camera 02/ })).toBeEnabled();
+    expect(screen.getByRole("button", { name: /Camera 03/ })).toBeDisabled();
+    expect(container.querySelectorAll("video")).toHaveLength(1);
   });
 
-  it("renders all cameras in a multiview layout when enabled", () => {
-    render(
-      <CameraGrid
-        streams={[
-          { key: "cam1", title: "Camera 01", src: "http://localhost:8888/cam1/index.m3u8" },
-          { key: "cam2", title: "Camera 02", src: "http://localhost:8888/cam2/index.m3u8" },
-          { key: "cam3", title: "Camera 03", src: "http://localhost:8888/cam3/index.m3u8" },
-        ]}
-        selectedCamera="cam1"
-        multiview={true}
-        onSelectCamera={() => undefined}
-      />,
-    );
+  it("switches feeds without rendering multiple active players", () => {
+    const onSelectCamera = vi.fn();
+    render(<CameraGrid streams={streams} selectedCamera="cam1" onSelectCamera={onSelectCamera} />);
+    fireEvent.click(screen.getByRole("button", { name: /Camera 02/ }));
+    expect(onSelectCamera).toHaveBeenCalledWith("cam2");
+  });
 
-    expect(screen.getAllByText(/CAM\s+0[1-3]/).length).toBeGreaterThanOrEqual(3);
+  it("shows an explicit unavailable state when no feed is configured", () => {
+    render(<CameraGrid streams={streams.map((camera) => ({ ...camera, src: "", enabled: false }))} selectedCamera="cam1" onSelectCamera={vi.fn()} />);
+    expect(screen.getByText(/Camera playback is not configured/)).toBeInTheDocument();
   });
 });

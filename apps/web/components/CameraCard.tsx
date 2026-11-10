@@ -52,8 +52,6 @@ export function CameraCard({
         <VideoPlayer
           src={src}
           title={cameraLabel}
-          autoplay
-          muted
           className="aspect-video"
         />
       )}

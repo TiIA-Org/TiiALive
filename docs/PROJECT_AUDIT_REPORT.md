@@ -1,4 +1,8 @@
-# TiiA Live — Technical Audit & Project Status Report
+# Historical snapshot — superseded
+
+This audit describes an earlier repository state and is retained for traceability. Its statements about absent admin/API/persistence functionality and its reported check results do not describe the current tree and have not been re-verified. Use the current implementation, [architecture](architecture.md), and [deployment guide](deployment.md) for the present state. No production deployment or external service was verified by the latest code changes.
+
+# TiiA Live — Technical Audit & Project Status Report (historical)
 
 ## 1. Executive summary
 

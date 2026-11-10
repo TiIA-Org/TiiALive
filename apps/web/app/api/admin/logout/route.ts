@@ -1,17 +1,29 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const ADMIN_COOKIE = "tiia_admin_session";
+import { ADMIN_SESSION_COOKIE, revokeAdminSession, secureCookie } from "@/lib/admin-auth";
 
-export async function POST() {
+export async function POST(request: Request) {
+  const origin = request.headers.get("origin");
+  if (!origin || origin !== new URL(request.url).origin) {
+    return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
+  }
+
   const cookieStore = await cookies();
-  cookieStore.set(ADMIN_COOKIE, "", {
+  const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
+  try {
+    await revokeAdminSession(token);
+  } catch {
+    return NextResponse.json({ error: "Unable to revoke session" }, { status: 503 });
+  }
+
+  const response = NextResponse.json({ ok: true });
+  response.cookies.set(ADMIN_SESSION_COOKIE, "", {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookie(),
     maxAge: 0,
     path: "/",
   });
-
-  return NextResponse.json({ ok: true });
+  return response;
 }

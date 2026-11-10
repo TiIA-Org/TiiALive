@@ -1,6 +1,6 @@
-# Development Guide
+# Development guide
 
-## Local setup
+## Local web app
 
 ```bash
 cd apps/web
@@ -8,28 +8,24 @@ npm install
 npm run dev
 ```
 
-## Environment variables
+Copy the repository `.env.example` to `apps/web/.env.local` for local development. Keep server-only OAuth and Supabase keys out of `NEXT_PUBLIC_*` variables. Leave stream URL values empty until you have valid playback endpoints; empty feeds are displayed as not configured.
 
-Copy the sample file and adjust stream URLs if needed:
+## Local stream testing
 
-```bash
-cp .env.example .env
-```
+MediaMTX is configured by `streaming/mediamtx/mediamtx.yml`, and `docker compose up -d mediamtx` runs only the local media server. OBS can publish to the `cam1`, `cam2`, and `cam3` paths on local RTMP. Browser playback URLs must be set explicitly for the local host. This local setup is not safe for public deployment.
 
-## Frontend structure
-
-- `app/` contains the route, layout, and metadata.
-- `components/` contains reusable UI pieces.
-- `lib/` holds the stream config and helper logic.
-
-## Validation
+## Tests and checks
 
 ```bash
+cd apps/web
+npm test -- --run
 npm run lint
-npm run test
+npm run typecheck
 npm run build
 ```
 
-## Notes
+Route and authentication tests use mocks and do not prove that Twitch OAuth, Supabase, or MediaMTX is configured. Validate those integrations against isolated staging services.
 
-The site intentionally keeps stream configuration centralized to make future API or CMS integration straightforward.
+## Environment configuration
+
+Variable names, server/public visibility, OAuth callback setup, and Preview/Production guidance are listed in [deployment.md](deployment.md). Do not copy production secrets into local development or commit environment files.

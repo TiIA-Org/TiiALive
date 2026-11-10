@@ -15,10 +15,10 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "DanteFDD — Live",
-  description: "GTA VI LIVE — 24/7. One week. Three cameras. No sleep.",
+  description: "Watch DanteFDD's GTA VI broadcast and independent live cameras.",
   openGraph: {
     title: "DanteFDD — Live",
-    description: "GTA VI LIVE — 24/7. One week. Three cameras. No sleep.",
+    description: "Watch DanteFDD's GTA VI broadcast and independent live cameras.",
     type: "website",
   },
 };
