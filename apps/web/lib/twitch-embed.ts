@@ -26,7 +26,7 @@ export function getApprovedTwitchParentHostnames(
 ): string[] {
   const configuredHosts = environment.TWITCH_PARENT_HOSTS?.split(",") ?? [];
   const deploymentHosts = [environment.VERCEL_URL ?? "", environment.VERCEL_BRANCH_URL ?? ""];
-  const productionsHosts = ["dantefdd.pt", "www.dantefdd.pt"];
+  const productionHosts = ["dantefdd.pt", "www.dantefdd.pt"];
   const localHosts = environment.NODE_ENV === "production" ? [] : ["localhost", "127.0.0.1"];
   const hostnames = [...configuredHosts, ...deploymentHosts, ...localHosts, ...productionHosts]
     .map(normalizeTwitchHostname)
