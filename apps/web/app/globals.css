@@ -50,7 +50,7 @@ body {
 
 .hero-image-photo {
   object-fit: cover;
-  object-position: center 62%;
+  object-position: center 25%;
   animation: hero-drift 18s ease-in-out infinite;
   will-change: transform;
 }
